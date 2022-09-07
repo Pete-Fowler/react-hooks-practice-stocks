@@ -5,7 +5,10 @@ import SearchBar from "./SearchBar";
 
 function MainContainer() {
   const [ stocks, setStocks ] = useState([]);
-  const [ portfolio, setPortfolio ] = useState([])
+  const [ portfolio, setPortfolio ] = useState([]);
+  const [ sorted, setSortedBy ] = useState('');
+  const [ filtered, setFiltered ] = useState('Tech');
+
 
   useEffect(() => {
     fetch('http://localhost:3001/stocks')
@@ -23,15 +26,32 @@ function MainContainer() {
     }
   }
 
-  const stocksShown = stocks;
+  function sortStocks(method) {
+    setSortedBy(method);
+  }
+
+  const stocksShown = stocks.sort((a, b) => {
+    if(sorted === 'Alphabetically') {
+      const aName = a.name.toUpperCase();
+      const bName = b.name.toUpperCase();
+      return aName < bName ? -1 : 1;
+    }
+    if(sorted === 'Price') {
+      return a.price - b.price;
+    }
+    else {
+      return 0;
+    }
+  })
+
   const portfolioShown = portfolio;
 
   return (
     <div>
-      <SearchBar />
+      <SearchBar sortStocks={sortStocks}/>
       <div className="row">
         <div className="col-8">
-          <StockContainer stocks={stocksShown} toggleInPortfolio={toggleInPortfolio}/>
+          <StockContainer stocks={stocksShown} sortStocks={sortStocks} toggleInPortfolio={toggleInPortfolio}/>
         </div>
         <div className="col-4">
           <PortfolioContainer portfolio={portfolioShown} toggleInPortfolio={toggleInPortfolio}/>
