@@ -30,25 +30,25 @@ function MainContainer() {
     setSortedBy(method);
   }
 
+  function filterStocks(method) {
+    setFiltered(method)
+  }
+
   const stocksShown = stocks.sort((a, b) => {
     if(sorted === 'Alphabetically') {
       const aName = a.name.toUpperCase();
       const bName = b.name.toUpperCase();
       return aName < bName ? -1 : 1;
-    }
-    if(sorted === 'Price') {
+    } else {
       return a.price - b.price;
     }
-    else {
-      return 0;
-    }
-  })
+  }).filter(stock => stock.type === filtered);
 
   const portfolioShown = portfolio;
 
   return (
     <div>
-      <SearchBar sortStocks={sortStocks}/>
+      <SearchBar sortStocks={sortStocks} filterStocks={filterStocks}/>
       <div className="row">
         <div className="col-8">
           <StockContainer stocks={stocksShown} sortStocks={sortStocks} toggleInPortfolio={toggleInPortfolio}/>
